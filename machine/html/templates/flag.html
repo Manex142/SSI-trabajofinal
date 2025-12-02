@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reto Completado — Retro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+
+/* --------------------------
+   ESTILO RETRO / PIXEL ART
+   -------------------------- */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #33ff33;
+  font-family: "Courier New", monospace;
+  text-shadow: 0 0 4px #33ff33;
+  overflow: hidden;
+}
+
+/* Efecto CRT */
+.crt {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,255,0,0.07) 0px,
+    rgba(0,255,0,0.07) 2px,
+    rgba(0,0,0,0.2) 3px
+  );
+  pointer-events: none;
+}
+
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(0, 255, 0, 0.12) 0%, rgba(0,0,0,0.9) 80%);
+  pointer-events: none;
+}
+
+/* Contenedor principal */
+.container {
+  position: relative;
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Skull ASCII (animada glitch) */
+#skull {
+  white-space: pre;
+  font-size: 14px;
+  line-height: 14px;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 0 6px #33ff33);
+  animation: skullGlitch 2s infinite;
+}
+
+@keyframes skullGlitch {
+  0% { text-shadow: 0 0 5px #33ff33; }
+  20% { text-shadow: 2px 0 #00ff99, -2px 0 #00ffaa; }
+  40% { text-shadow: -2px 0 #009966, 2px 0 #00ffcc; }
+  60% { text-shadow: 0 0 5px #33ff33; }
+}
+
+/* Título ganador */
+#title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  animation: flicker 2.4s infinite;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 60%, 62%, 100% { opacity: 1; }
+  20%, 61% { opacity: 0.4; }
+}
+
+/* Flag revelada */
+#flag {
+  margin-top: 35px;
+  font-size: 20px;
+  opacity: 0;
+  animation: reveal 1s ease-out forwards 2.4s;
+  padding: 10px 20px;
+  border: 1px solid #33ff33;
+  display: inline-block;
+  background: rgba(0,255,0,0.05);
+}
+
+@keyframes reveal {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Glitch de la flag antes de aparecer */
+.glitch {
+  animation: glitchEffect 0.55s steps(2, end) infinite;
+}
+
+@keyframes glitchEffect {
+  0% { text-shadow: 2px 0 #00ff66; }
+  50% { text-shadow: -2px 0 #009944; }
+  100% { text-shadow: 2px 0 #00ff66; }
+}
+
+/* Partículas retro verdes */
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+/* Scroll deshabilitado */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+</style>
+</head>
+<body>
+
+<div class="crt">
+  <div class="container">
+
+<pre id="skull">
+      ████████████████████
+    ████████████████████████
+   ████████▀▀▀      ▀▀▀██████
+  ██████▀                ▀████
+ █████▀   ▄████▄  ▄████▄   ▀████
+ ████   ▄███████  ███████▄   ███
+ ███   █████████  █████████   ███
+ ███                          ███
+ ███           ▀  ▀           ███
+   ████    ▀ █ ▄     █ █    ████
+   █████▄      █ █ █ ▀   ▄█████
+   ██████▄              ▄██████
+      █████████▄   ▄█████████
+      ██████████████████████
+</pre>
+
+    <div id="title">=== ACCESO CONCEDIDO ===<br>RETO SUPERADO</div>
+
+    <div id="flag" class="">##FLAG##</div>
+
+  </div>
+</div>
+
+<canvas id="particles"></canvas>
+
+<script>
+
+/* --------------------------
+   Partículas retro verdes
+   -------------------------- */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.onresize = resize;
+
+let particles = [];
+for (let i = 0; i < 140; i++) {
+  particles.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    s: Math.random()*2 + 1,
+    v: Math.random()*0.6 + 0.2
+  });
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#33ff33";
+  particles.forEach(p => {
+    ctx.fillRect(p.x, p.y, p.s, p.s);
+    p.y += p.v;
+    if (p.y > canvas.height) p.y = -5;
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* --------------------------
+   Auto-reveal de la flag
+   -------------------------- */
+
+const flag = document.getElementById("flag");
+
+// Glitch antes de aparecer
+setTimeout(() => {
+  flag.classList.add("glitch");
+}, 300);
+
+// Fija el texto real
+setTimeout(() => {
+  flag.classList.remove("glitch");
+}, 2300);
+
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,15 @@
+services:
+  machine1:
+    image: web-machine
+    hostname: web-machine
+    build: machine
+    volumes:
+      - ./flag:/flag
+    ports:
+      - 8080:80
+    networks:
+      - internal_net
+
+networks:
+  internal_net:
+    driver: bridge
