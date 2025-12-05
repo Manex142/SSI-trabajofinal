@@ -3,6 +3,7 @@ FROM debian
 
 COPY html /var/www/html/
 COPY src /opt/src/
+COPY flag /opt/flag/
 
 RUN cd /opt/src/; chmod 777 prepare.sh; ./prepare.sh;
 
